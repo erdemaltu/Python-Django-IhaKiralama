@@ -17,4 +17,4 @@ Fonksiyonalite
 - Tüm Listeleme sayfaları için tabloda filtreleme ve arama özellikleri
 
 Not
-Proje süresi 3 gündür. Ama ben hem işte çalıştığım için hem de akşamları kursa gittiğim için daha  kısıtlı zaman aralığında eksikleriyle beraber projeyi tamamladım.
+- Proje süresi 3 gündür. Ama ben hem işte çalıştığım için hem de akşamları kursa gittiğim için daha  kısıtlı zaman aralığında eksikleriyle beraber projeyi tamamladım.
