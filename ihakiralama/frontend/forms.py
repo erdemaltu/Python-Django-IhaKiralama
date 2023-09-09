@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from hesaplar.models import CustomUser
 
-class LoginForm(forms.Form):
+class LoginForm(forms.Form):#kullanıcı giriş işlemi için htmle form gönderimi için
     username = forms.CharField(widget=forms.TextInput(attrs={
         'class':'form-control',
         'placeholder':'UserName or Email',
@@ -14,7 +14,7 @@ class LoginForm(forms.Form):
         'id':'password'
     }))
 
-class RegisterForm(UserCreationForm):
+class RegisterForm(UserCreationForm):#kullanıcı kayıt işlemi için htmle form gönderimi için
     username = forms.CharField(widget=forms.TextInput(attrs={
         'class':'form-control',
         'placeholder':'UserName',

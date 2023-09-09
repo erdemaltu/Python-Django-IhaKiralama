@@ -124,13 +124,12 @@
 </div>
 <script>
     $(document).ready(function () {
-        $("#login-form").submit(function (e) {
+        $("#login-form").submit(function (e) { //Login işlemleri
             e.preventDefault();
             
-            var formData = {
+            var formData = { //Girilen veriyi çekme
                 username: $("#username").val(),
                 password: $("#password").val(),
-                // Diğer gerekli kayıt bilgilerini ekleyin
             };
     
             $.ajax({
@@ -140,7 +139,7 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (data) {
-                    // Kullanıcıyı giriş sayfasına yönlendirin
+                    // Kullanıcıyı giriş sayfasına yönlendirme
                     window.location.href = "/"; // Yönlendirilecek sayfanın URL'si
                 },
                 error: function (error,xhr, textStatus, errorThrown) {

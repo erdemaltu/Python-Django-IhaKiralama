@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from hesaplar.models import CustomUser
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):#Kullanıcı modeli için dönüştürücü
     class Meta:
         model = CustomUser
         fields = ['id','username', 'email', 'password']

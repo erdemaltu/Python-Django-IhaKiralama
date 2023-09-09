@@ -18,8 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('', include('frontend.urls')),
+    path('', include('frontend.urls')),#frontend app içindeki urls.py sayfası dahil etmek için
     path('admin/', admin.site.urls),
-    path('api/', include('hesaplar.api.urls')),
-    path('api/', include('ihalar.api.urls')),
+    path('api/', include('hesaplar.api.urls')),#hesaplar app içindeki urls.py sayfası dahil etmek için
+    path('api/', include('ihalar.api.urls')),#ihalar app içindeki urls.py sayfası dahil etmek için
 ]

@@ -2,14 +2,14 @@ from rest_framework import serializers
 from ihalar.models import Iha, Kiralama
 from hesaplar.api.serializers import UserSerializer
 
-class IhaSerializer(serializers.ModelSerializer):
+class IhaSerializer(serializers.ModelSerializer):#İha modeli için dönüştürücü
 
     class Meta:
         model = Iha
         fields = '__all__'
         read_only_fields = ['id','created_at','updated_at']
 
-class KiralamaSerializer(serializers.ModelSerializer):
+class KiralamaSerializer(serializers.ModelSerializer):#Kiralama modeli için dönüştürücü
 
     uyeler =  UserSerializer(many = True, read_only= True)
 

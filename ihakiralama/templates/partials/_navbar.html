@@ -26,7 +26,7 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if user.is_authenticated %}
-                    {% comment %} <li><a class="hover-btn-new log orange mr-2" href="{% url 'dashboard' %}" ><span>{{user.username}}</span></a></li> {% endcomment %}
+                    <li><a class="hover-btn-new log orange mr-2" href="#" ><span>{{user.username}}</span></a></li>
                     <li><a class="hover-btn-new log orange" href="javascript:{document.getElementById('logout').submit()}" ><span><i class="fa fa-sign-out"></i></span></a>
                         <form action="{% url 'log-out' %}" method="POST" id="logout">
                             {% csrf_token %}

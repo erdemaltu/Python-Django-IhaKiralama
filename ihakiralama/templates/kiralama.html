@@ -41,7 +41,7 @@
 							<button id="güncelle" data-veri-id="{{kr.id}}" type="submit" class="btn btn-outline-warning rounded-0" data-toggle="modal" data-target="#update">
 								<span>Güncelle</span>
 							</button>
-							<button type="submit" class="btn btn-outline-danger rounded-0" id="sil" data-veri-id="${veri.id}">
+							<button type="submit" class="btn btn-outline-danger rounded-0" id="sil" data-veri-id="{{kr.id}}">
 								<span>Sil</span>
 							</button>
 						  </td>
@@ -62,7 +62,7 @@
         </div><!-- end container -->
     </div><!-- end section -->	
 	<div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="createLabel"
-				aria-hidden="true" data-backdrop="static" data-keyboard="false">
+				aria-hidden="true" data-backdrop="static" data-keyboard="false"> {% comment %} Kiralama ekleme işlemi için modal {% endcomment %}
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -110,17 +110,17 @@
 		</div>
 	</div>
 	<div class="modal fade" id="update" tabindex="-1" role="dialog" aria-labelledby="updateLabel"
-				aria-hidden="true" data-backdrop="static" data-keyboard="false">
+				aria-hidden="true" data-backdrop="static" data-keyboard="false"> {% comment %} Kiralama güncelleme işlemi için modal {% endcomment %}
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h2 class="modal-title" id="updateLabel">İHA Güncelle</h2>
+					<h2 class="modal-title" id="updateLabel">Güncelle</h2>
 					<button type="button" class="close" data-dismiss="modal">
 						<span>&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
-					<h1 id="marka-baslik"></h1>
+					<h1 id="marka-baslik">Kiralama Güncelle</h1>
 				</div>
 				<div class="modal-footer">
 					<form id="veri-güncelle">
@@ -150,7 +150,7 @@
 		</div>
 	</div>
 	<script>
-		$(document).ready(function() {
+		$(document).ready(function() { // tablodaki verilerin arama işlemi için fonsiyon
 			$(".search").keyup(function () {
 			  var searchTerm = $(".search").val();
 			  var listItem = $('.results tbody').children('tr');
@@ -179,18 +179,19 @@
 	</script>
 	<script>
 		$(document).on("click","#ekle", function () {
-			var createData = {
+			var createData = { // Eklenecek veri çekilir
 				iha: $("#iha_ekle").val(),
 				kiralayan_uye: $("#kiralayan_uye_ekle").val(),
 			};
 			$.ajax({
-				type: "POST", // veya "PATCH" isteği
-				url: "/api/kiralama/", // Güncelleme API isteğinin URL'si
-				data: JSON.stringify(createData), // Güncellenecek veri JSON olarak gönderilir
+				type: "POST", //  "POST" isteği
+				url: "/api/kiralama/", // Ekleme API isteğinin URL'si
+				data: JSON.stringify(createData), // Eklenecek veri JSON olarak gönderilir
 				contentType: "application/json; charset=utf-8",
 				success: function (response) {
 					alert("Veri eklendi.");
-					// Güncelleme işlemi başarılı olduysa sayfayı yeniden yükleme veya veriyi güncelleme işlemini yapabilirsiniz.
+					window.location.href = "/kiralama";
+					// Ekleme işlemi başarılı olduysa
 				},
 				error: function (error) {
 					alert("Bir hata oluştu.");
@@ -200,20 +201,20 @@
 
 		$(document).on("click","#put", function () {
 			var veriID = $(this).data("veri-id"); // Güncellenecek verinin kimliği
-			var updatedData = {
+			var updatedData = { // Güncellecek veri çekilir
 				iha: $("#ihalar").val(),
 				kiralayan_uye: $("#uyeler").val(),
 			};
 			console.log(updatedData)
 			$.ajax({
-				type: "PUT", // veya "PATCH" isteği
+				type: "PUT", //"PUT" isteği
 				url: "/api/kiralama/" + veriID, // Güncelleme API isteğinin URL'si
 				data: JSON.stringify(updatedData), // Güncellenecek veri JSON olarak gönderilir
 				contentType: "application/json; charset=utf-8",
 				success: function (response) {
 					alert("Veri güncellendi.");
 					window.location.href = "/kiralama";
-					// Güncelleme işlemi başarılı olduysa sayfayı yeniden yükleme veya veriyi güncelleme işlemini yapabilirsiniz.
+					// Güncelleme işlemi başarılı olduysa
 				},
 				error: function (error) {
 					alert("Bir hata oluştu.");
@@ -222,29 +223,29 @@
 		});
 
 		$(document).on("click","#güncelle", function () {
-			var veriID = $(this).data("veri-id");
-			var ihaID;
-			var uyeID;
+			var veriID = $(this).data("veri-id"); // Güncellenecek verinin kimliği
+			var ihaID; // Global değişken atama
+			var uyeID; // Global değişken atama
 			$.ajax({
-				type: "GET", // veya "PATCH" isteği
+				type: "GET", //"GET" isteği
 				url: "/api/kiralama/" + veriID, // Güncelleme API isteğinin URL'si
 				dataType: 'json',
 				success: function (data) {
 					var ihaID=data.iha;
 					var uyeID=data.kiralayan_uye;
-					selectIha(ihaID);
-					selectUye(uyeID);
+					selectIha(ihaID); // İhalarda Sellect inputu için oluşturulan fonksiyonu çağırma
+					selectUye(uyeID); // Üyelerde Sellect inputu için oluşturulan fonksiyonu çağırma
 					var button = $("#button");
-            		button.empty();
-					var veriHTML=`<button id="put" data-veri-id="${data.id}" type="submit" class="btn btn-warning">Güncelle</button>`;
+            		button.empty(); // Kapatıp diğer modala geçtiğimizde eski modal butonu yok etme
+					var veriHTML=`<button id="put" data-veri-id="${data.id}" type="submit" class="btn btn-warning">Güncelle</button>`; // Güncellence veri-id li buton olması için modal açıldığında button atama
 					button.append(veriHTML);
-					// Güncelleme işlemi başarılı olduysa sayfayı yeniden yükleme veya veriyi güncelleme işlemini yapabilirsiniz.
+					// Güncelleme işlemi başarılı olduysa 
 				},
 				error: function (error) {
 					alert("Bir hata oluştu.");
 				}
 			});
-			function selectIha(ajaxData) {
+			function selectIha(ajaxData) { // İhalar için select input fonksiyonu
 				$.ajax({
 					url: '/api/iha/', // API'nin URL'si
 					type: 'GET',
@@ -257,14 +258,14 @@
 							  value: item.id, // Seçeneğin değeri
 							  text: item.marka // Seçeneğin metni
 							}));
-						}); // 5 saniye sonra tekrar güncelle // İlk verinin id'sini alın
-						select.val(ajaxData);
+						}); 
+						select.val(ajaxData); // Önceden seçili olan veriyi seçili konuma getirme
 					},
-					error: function (error) { // Hata durumunda da tekrar güncelle
+					error: function (error) { // Hata durumunda da 
 					}
 				});
 			  }
-			function selectUye(ajaxData) {
+			function selectUye(ajaxData) { // Üyeler için select input fonksiyonu
 				$.ajax({
 					url: '/api/uyeler/', // API'nin URL'si
 					type: 'GET',
@@ -277,13 +278,29 @@
 							  value: item.id, // Seçeneğin değeri
 							  text: item.username // Seçeneğin metni
 							}));
-						}); // 5 saniye sonra tekrar güncelle // İlk verinin id'sini alın
-						select.val(ajaxData);
+						}); 
+						select.val(ajaxData); // Önceden seçili olan veriyi seçili konuma getirme
 					},
-					error: function (error) { // Hata durumunda da tekrar güncelle
+					error: function (error) { // Hata durumunda da
 					}
 				});
 			  }
+		});
+
+		$(document).on("click","#sil", function () {
+			var veriID = $(this).data("veri-id"); // Silinecek verinin kimliği
+			$.ajax({
+				type: "DELETE",
+				url: "/api/kiralama/" + veriID, // Silme API isteğinin URL'si
+				success: function (response) {
+					alert("Veri Silindi.");
+					window.location.href = "/kiralama";
+					// Silme işlemi başarılı olduysa
+				},
+				error: function (error) {
+					alert("Bir hata oluştu.");
+				}
+			});
 		});
 	</script>
 	{% endblock %}

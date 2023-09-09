@@ -130,14 +130,13 @@
 </div>
 <script>
     $(document).ready(function () {
-        $("#register-form").submit(function (e) {
+        $("#register-form").submit(function (e) { //Kullanıcı kayıt işlemi
             e.preventDefault();
             
-            var formData = {
+            var formData = { // Girilen veri çekme
                 username: $("#username").val(),
                 email: $("#email").val(),
                 password: $("#password").val(),
-                // Diğer gerekli kayıt bilgilerini ekleyin
             };
     
             $.ajax({
@@ -148,7 +147,7 @@
                 dataType: "json",
                 success: function (data) {
                     alert('Hesap başarı ile oluşturuldu, GİRİŞ yapabilirsiniz.');
-                    // Kullanıcıyı giriş sayfasına yönlendirin
+                    // Kullanıcıyı giriş sayfasına yönlendirme
                     window.location.href = "/login"; // Yönlendirilecek sayfanın URL'si
                 },
                 error: function (error) {
