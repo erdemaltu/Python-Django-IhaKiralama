@@ -1,0 +1,289 @@
+{% extends 'partials/_base.html' %}
+{% load static %}
+
+{% block content %}
+	
+	<div class="all-title-box">
+		<div class="container text-center">
+			<h1>Kiralama</h1>
+		</div>
+	</div>
+	
+	<div id="teachers" class="section wb">
+        <div class="container">
+            <div class="row">
+				<div class="col-lg-9 blog-post-single">
+					<div class="form-group pull-right">
+						<input type="text" class="search form-control" placeholder="What you looking for?">
+					</div>
+					<span class="counter pull-right"></span>
+					<table class="table table-hover table-bordered results">
+					  <thead>
+						<tr>
+						  <th>#</th>
+						  <th class="col-md-5 col-xs-5">İha</th>
+						  <th class="col-md-4 col-xs-4">Kiralayan</th>
+						  <th class="col-md-4 col-xs-4">Kiralanma Tarihi</th>
+						  <th class="col-md-4 col-xs-4">İşlemler</th>
+						</tr>
+						<tr class="warning no-result">
+						  <td colspan="4"><i class="fa fa-warning"></i> No result</td>
+						</tr>
+					  </thead>
+					  <tbody>
+						{% for kr in kiralama %}
+						<tr>
+						  <th scope="row">{{ forloop.counter }}</th>
+						  <td>{{kr.iha}}</td>
+						  <td>{{kr.kiralayan_uye}}</td>
+						  <td>{{kr.updated_at|date:"d.m.Y H:i:s"}}</td>
+						  <td>
+							<button id="güncelle" data-veri-id="{{kr.id}}" type="submit" class="btn btn-outline-warning rounded-0" data-toggle="modal" data-target="#update">
+								<span>Güncelle</span>
+							</button>
+							<button type="submit" class="btn btn-outline-danger rounded-0" id="sil" data-veri-id="${veri.id}">
+								<span>Sil</span>
+							</button>
+						  </td>
+						</tr>
+						{% endfor %}
+					  </tbody>
+					</table>
+				</div>
+				<div class="col-lg-3 blog-post-single">
+					<div class="widget-categories">
+						<h3 class="widget-title">Yeni Kiralama</h3>
+						<button  type="submit" class="btn btn-outline-success rounded-0" data-toggle="modal" data-target="#create">
+							<span>Eklemek için tıklayınız</span>
+						</button>
+					</div>
+                </div><!-- end col -->
+            </div><!-- end row -->
+        </div><!-- end container -->
+    </div><!-- end section -->	
+	<div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="createLabel"
+				aria-hidden="true" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="modal-title" id="createLabel">Ekle</h2>
+					<button type="button" class="close" data-dismiss="modal">
+						<span>&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<h1> Kiralama Ekle</h1>
+				</div>
+				<div class="modal-footer">
+					<form id="veri-güncelle">
+						<div class="form-group row">
+							<label for="inputEmail3" class="col-sm-2 col-form-label">İha</label>
+							<div class="col-sm-10">
+								<select id="iha_ekle">
+									<option selected>Seçiniz</option>
+									{% for iha in ihalar %}
+										<option value="{{iha.id}}">{{iha}}</option>
+									{% endfor %}
+								  </select>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="inputEmail3" class="col-sm-2 col-form-label">Uye</label>
+							<div class="col-sm-10">
+								<select id="kiralayan_uye_ekle" >
+									<option selected>Seçiniz</option>
+									{% for uye in uyeler %}
+										<option value="{{uye.id}}">{{uye}}</option>
+									{% endfor %}
+								  </select>
+							</div>
+						</div>
+						<div class="form-group row">
+								<button id="ekle"  type="submit" class="btn btn-success">Ekle</button>
+						  </div>
+					</form>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">
+						CANCEL
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="update" tabindex="-1" role="dialog" aria-labelledby="updateLabel"
+				aria-hidden="true" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="modal-title" id="updateLabel">İHA Güncelle</h2>
+					<button type="button" class="close" data-dismiss="modal">
+						<span>&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<h1 id="marka-baslik"></h1>
+				</div>
+				<div class="modal-footer">
+					<form id="veri-güncelle">
+						<div class="form-group row">
+							<label for="inputEmail3" class="col-sm-2 col-form-label">İha</label>
+							<div class="col-sm-10">
+								<select id="ihalar">
+								  </select>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="inputEmail3" class="col-sm-2 col-form-label">Uye</label>
+							<div class="col-sm-10">
+								<select id="uyeler" >
+								</select>
+							</div>
+						</div>
+						<div class="form-group row" id="button">
+						
+						</div>
+					</form>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">
+						CANCEL
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		$(document).ready(function() {
+			$(".search").keyup(function () {
+			  var searchTerm = $(".search").val();
+			  var listItem = $('.results tbody').children('tr');
+			  var searchSplit = searchTerm.replace(/ /g, "'):containsi('")
+			  
+			$.extend($.expr[':'], {'containsi': function(elem, i, match, array){
+				  return (elem.textContent || elem.innerText || '').toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+			  }
+			});
+			  
+			$(".results tbody tr").not(":containsi('" + searchSplit + "')").each(function(e){
+			  $(this).attr('visible','false');
+			});
+		  
+			$(".results tbody tr:containsi('" + searchSplit + "')").each(function(e){
+			  $(this).attr('visible','true');
+			});
+		  
+			var jobCount = $('.results tbody tr[visible="true"]').length;
+			  $('.counter').text(jobCount + ' item');
+		  
+			if(jobCount == '0') {$('.no-result').show();}
+			  else {$('.no-result').hide();}
+					});
+		  });
+	</script>
+	<script>
+		$(document).on("click","#ekle", function () {
+			var createData = {
+				iha: $("#iha_ekle").val(),
+				kiralayan_uye: $("#kiralayan_uye_ekle").val(),
+			};
+			$.ajax({
+				type: "POST", // veya "PATCH" isteği
+				url: "/api/kiralama/", // Güncelleme API isteğinin URL'si
+				data: JSON.stringify(createData), // Güncellenecek veri JSON olarak gönderilir
+				contentType: "application/json; charset=utf-8",
+				success: function (response) {
+					alert("Veri eklendi.");
+					// Güncelleme işlemi başarılı olduysa sayfayı yeniden yükleme veya veriyi güncelleme işlemini yapabilirsiniz.
+				},
+				error: function (error) {
+					alert("Bir hata oluştu.");
+				}
+			});
+		});
+
+		$(document).on("click","#put", function () {
+			var veriID = $(this).data("veri-id"); // Güncellenecek verinin kimliği
+			var updatedData = {
+				iha: $("#ihalar").val(),
+				kiralayan_uye: $("#uyeler").val(),
+			};
+			console.log(updatedData)
+			$.ajax({
+				type: "PUT", // veya "PATCH" isteği
+				url: "/api/kiralama/" + veriID, // Güncelleme API isteğinin URL'si
+				data: JSON.stringify(updatedData), // Güncellenecek veri JSON olarak gönderilir
+				contentType: "application/json; charset=utf-8",
+				success: function (response) {
+					alert("Veri güncellendi.");
+					window.location.href = "/kiralama";
+					// Güncelleme işlemi başarılı olduysa sayfayı yeniden yükleme veya veriyi güncelleme işlemini yapabilirsiniz.
+				},
+				error: function (error) {
+					alert("Bir hata oluştu.");
+				}
+			});
+		});
+
+		$(document).on("click","#güncelle", function () {
+			var veriID = $(this).data("veri-id");
+			var ihaID;
+			var uyeID;
+			$.ajax({
+				type: "GET", // veya "PATCH" isteği
+				url: "/api/kiralama/" + veriID, // Güncelleme API isteğinin URL'si
+				dataType: 'json',
+				success: function (data) {
+					var ihaID=data.iha;
+					var uyeID=data.kiralayan_uye;
+					selectIha(ihaID);
+					selectUye(uyeID);
+					var button = $("#button");
+            		button.empty();
+					var veriHTML=`<button id="put" data-veri-id="${data.id}" type="submit" class="btn btn-warning">Güncelle</button>`;
+					button.append(veriHTML);
+					// Güncelleme işlemi başarılı olduysa sayfayı yeniden yükleme veya veriyi güncelleme işlemini yapabilirsiniz.
+				},
+				error: function (error) {
+					alert("Bir hata oluştu.");
+				}
+			});
+			function selectIha(ajaxData) {
+				$.ajax({
+					url: '/api/iha/', // API'nin URL'si
+					type: 'GET',
+					dataType: 'json',
+					success: function (data) {
+						var select = $('#ihalar');
+            			select.empty();
+						$.each(data, function(index, item) {
+							select.append($('<option>', {
+							  value: item.id, // Seçeneğin değeri
+							  text: item.marka // Seçeneğin metni
+							}));
+						}); // 5 saniye sonra tekrar güncelle // İlk verinin id'sini alın
+						select.val(ajaxData);
+					},
+					error: function (error) { // Hata durumunda da tekrar güncelle
+					}
+				});
+			  }
+			function selectUye(ajaxData) {
+				$.ajax({
+					url: '/api/uyeler/', // API'nin URL'si
+					type: 'GET',
+					dataType: 'json',
+					success: function (data) {
+						var select = $('#uyeler');
+						select.empty();
+						$.each(data, function(index, item) {
+							select.append($('<option>', {
+							  value: item.id, // Seçeneğin değeri
+							  text: item.username // Seçeneğin metni
+							}));
+						}); // 5 saniye sonra tekrar güncelle // İlk verinin id'sini alın
+						select.val(ajaxData);
+					},
+					error: function (error) { // Hata durumunda da tekrar güncelle
+					}
+				});
+			  }
+		});
+	</script>
+	{% endblock %}

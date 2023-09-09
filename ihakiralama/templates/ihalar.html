@@ -1,0 +1,281 @@
+{% extends 'partials/_base.html' %}
+{% load static %}
+
+{% block content %}
+	
+	<div class="all-title-box">
+		<div class="container text-center">
+			<!-- <h1>Blog Single<span class="m_1">Lorem Ipsum dolroin gravida nibh vel velit.</span></h1> -->
+			<h1>İHALAR</h1>
+		</div>
+	</div>
+	
+    <div id="overviews" class="section wb">
+        <div class="container">
+            <div class="row"> 
+                <div class="col-lg-9 blog-post-single">
+					<div id="veri-listesi" class="row"> 
+							
+                    </div><!-- end row -->
+                </div><!-- end col -->
+				<div class="col-lg-3 col-12 right-single">
+					<div class="widget-categories">
+						<h3 class="widget-title">İha Ekleme</h3>
+						<button  type="submit" class="btn btn-outline-success rounded-0" data-toggle="modal" data-target="#create">
+							<span>Eklemek için tıklayınız</span>
+						</button>
+					</div>
+					<div class="widget-tags">
+						<h3 class="widget-title">Search</h3>
+					</div>
+				</div>
+            </div><!-- end row -->
+        </div><!-- end container -->
+    </div><!-- end section -->
+	<div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="createLabel"
+				aria-hidden="true" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="modal-title" id="createLabel">Ekle</h2>
+					<button type="button" class="close" data-dismiss="modal">
+						<span>&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<h1> İHA EKLEME</h1>
+				</div>
+				<div class="modal-footer">
+					<form id="veri-güncelle">
+						<div class="form-control">
+								<input class="form-control" type="text" placeholder="Marka" name="marka" id="marka_ekle" >
+						</div>
+						<div class="form-control">
+								<input class="form-control" type="text" placeholder="Model" name="model" id="model_ekle" >
+						</div>
+						<div class="form-control">
+								<input class="form-control" type="text" placeholder="Kategori" name="kategori" id="kategori_ekle" >
+						</div>
+						<div class="form-control">
+								<input class="form-control" type="text" placeholder="Ağırlık" name="agirlik" id="agirlik_ekle" >
+						</div>
+						<div class="form-control">
+								<button id="ekle"  type="submit" class="btn btn-success">Ekle</button>
+						  </div>
+					</form>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">
+						CANCEL
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="update" tabindex="-1" role="dialog" aria-labelledby="updateLabel"
+				aria-hidden="true" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="modal-title" id="updateLabel">İHA Güncelle</h2>
+					<button type="button" class="close" data-dismiss="modal">
+						<span>&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<h1 id="marka-baslik"></h1>
+				</div>
+				<div class="modal-footer">
+					<form id="veri-güncelle">
+						<div class="form-group row">
+							<label for="inputEmail3" class="col-sm-2 col-form-label">Marka</label>
+							<div class="col-sm-10">
+								<input type="text" placeholder="Marka" name="marka" id="marka" >
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="inputEmail3" class="col-sm-2 col-form-label">Model</label>
+							<div class="col-sm-10">
+								<input type="text" placeholder="Model" name="model" id="model" >
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="inputEmail3" class="col-sm-2 col-form-label">Kategori</label>
+							<div class="col-sm-10">
+								<input type="text" placeholder="Kategori" name="kategori" id="kategori" >
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="inputEmail3" class="col-sm-2 col-form-label">Ağırlık</label>
+							<div class="col-sm-10">
+								<input type="text" placeholder="Ağırlık" name="agirlik" id="agirlik" >
+							</div>
+						</div>
+						<div class="form-group row">
+							<div class="col-sm-10" id="button">
+								
+							</div>
+						  </div>
+					</form>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">
+						CANCEL
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		function veriGuncelle() {
+			$.ajax({
+				url: '/api/iha/', // API'nin URL'si
+				type: 'GET',
+				dataType: 'json',
+				success: function (data) {
+					var veriListesi = $("#veri-listesi");
+            		veriListesi.empty();
+					var veriler = data;
+					
+					// Verileri kullanmak için bir fonksiyon çağırabilirsiniz
+					döngüyeAktar(veriler);
+					
+					setTimeout(veriGuncelle, 3000); // 3 saniye sonra tekrar güncelle
+				},
+				error: function (error) {
+					console.log(error);
+					setTimeout(veriGuncelle, 3000); // Hata durumunda da tekrar güncelle
+				}
+			});
+		}
+		
+		$(document).ready(function () {
+			veriGuncelle(); // İlk kez çağır
+		});
+
+		$(document).on("click","#ekle", function () {
+			var createData = {
+				marka: $("#marka_ekle").val(),
+				model: $("#model_ekle").val(),
+				kategori: $("#kategori_ekle").val(),
+				agirlik: $("#agirlik_ekle").val()
+			};
+			$.ajax({
+				type: "POST", // veya "PATCH" isteği
+				url: "/api/iha/", // Güncelleme API isteğinin URL'si
+				data: JSON.stringify(createData), // Güncellenecek veri JSON olarak gönderilir
+				contentType: "application/json; charset=utf-8",
+				success: function (response) {
+					alert("Veri eklendi.");
+					// Güncelleme işlemi başarılı olduysa sayfayı yeniden yükleme veya veriyi güncelleme işlemini yapabilirsiniz.
+				},
+				error: function (error) {
+					alert("Bir hata oluştu.");
+				}
+			});
+		});
+
+		$(document).on("click","#put", function () {
+			var veriID = $(this).data("veri-id"); // Güncellenecek verinin kimliği
+			var updatedData = {
+				marka: $("#marka").val(),
+				model: $("#model").val(),
+				kategori: $("#kategori").val(),
+				agirlik: $("#agirlik").val()
+			};
+			$.ajax({
+				type: "PUT", // veya "PATCH" isteği
+				url: "/api/iha/" + veriID, // Güncelleme API isteğinin URL'si
+				data: JSON.stringify(updatedData), // Güncellenecek veri JSON olarak gönderilir
+				contentType: "application/json; charset=utf-8",
+				success: function (response) {
+					alert("Veri güncellendi.");
+					// Güncelleme işlemi başarılı olduysa sayfayı yeniden yükleme veya veriyi güncelleme işlemini yapabilirsiniz.
+				},
+				error: function (error) {
+					alert("Bir hata oluştu.");
+				}
+			});
+		});
+
+		$(document).on("click","#güncelle", function () {
+			var veriID = $(this).data("veri-id");
+			$.ajax({
+				type: "GET", // veya "PATCH" isteği
+				url: "/api/iha/" + veriID, // Güncelleme API isteğinin URL'si
+				dataType: 'json',
+				success: function (data) {
+					$("#marka-baslik").text(data.marka);
+					$("#marka").val(data.marka);
+            		$("#model").val(data.model);
+            		$("#kategori").val(data.kategori);
+            		$("#agirlik").val(data.agirlik);
+					var button = $("#button");
+            		button.empty();
+					var veriHTML=`<button id="put" data-veri-id="${data.id}" type="submit" class="btn btn-warning">Güncelle</button>`;
+					button.append(veriHTML);
+					// Güncelleme işlemi başarılı olduysa sayfayı yeniden yükleme veya veriyi güncelleme işlemini yapabilirsiniz.
+				},
+				error: function (error) {
+					alert("Bir hata oluştu.");
+				}
+			});
+		});
+
+		$(document).on("click","#sil", function () {
+			var veriID = $(this).data("veri-id"); // Silinecek verinin kimliği
+			$.ajax({
+				type: "DELETE",
+				url: "/api/iha/" + veriID, // Silme API isteğinin URL'si
+				success: function (response) {
+					alert("Veri Silindi.");
+					// Silme işlemi başarılı olduysa sayfayı yeniden yükleme veya veriyi kaldırma işlemini yapabilirsiniz.
+				},
+				error: function (error) {
+					alert("Bir hata oluştu.");
+				}
+			});
+		});
+	</script>
+	<script>
+		function döngüyeAktar(veriler) {
+			var veriListesi = $("#veri-listesi");
+
+			// Verileri döngü ile işleyin ve HTML içine ekleyin
+			$.each(veriler, function (index, veri) {
+				var veriHTML = `
+				<div class="col-lg-6 col-md-6 col-12 mb-4">
+					<div class="course-item">
+						<div class="image-blog">
+							<img src="https://cdn.baykartech.com/media/upload/userFormUpload/Ykp4fLcTzvaC62dCfHJC3pRPx2lOQiVB.JPG" alt="" class="img-fluid">
+						</div>
+						<div class="course-br">
+							<div class="course-title">
+								<h2><a href="#" title="">${veri.marka}</a></h2>
+							</div>
+							<div class="course-desc">
+								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mini… </p>
+							</div>
+						</div>
+						<div class="course-meta-bot">
+							<ul>
+								<li><i class="fa fa-calendar" aria-hidden="true"></i> {% now 'DATE_FORMAT' %}</li>
+								<li><i class="fa fa-book" aria-hidden="true"></i> ${veri.model}</li>
+								<li><i class="fa fa-book" aria-hidden="true"></i> ${veri.kategori}</li>
+							</ul>
+						</div>
+						<div class="course-meta-bot">
+							<button id="güncelle" data-veri-id="${veri.id}" type="submit" class="btn btn-outline-warning rounded-0" data-toggle="modal" data-target="#update">
+								<span>Güncelle</span>
+							</button>
+							<button type="submit" class="btn btn-outline-danger rounded-0" id="sil" data-veri-id="${veri.id}">
+								<span>Sil</span>
+							</button>
+						</div>
+					</div>
+				</div><!-- end col -->`
+				;
+				
+				veriListesi.append(veriHTML);
+			});
+		}
+	</script>
+	
+
+    {% endblock %}
